@@ -1,0 +1,399 @@
+\documentclass[letterpaper]{article}
+%\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage{amsmath}
+\usepackage[round]{natbib}
+%\usepackage{hyperref}
+%\usepackage{url}
+%\usepackage[left=2.5cm,right=2.5cm,top=2.5cm]{geometry}
+\usepackage{geometry}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\pkg}[1]{\textsf{#1}}
+\newcommand{\R}{\pkg{R}}
+\newcommand{\subsectionF}[1]{
+    \subsection*{Function \code{#1}}
+    \addcontentsline{toc}{subsection}{Function \code{#1}}
+    }
+
+%%\VignetteIndexEntry{Rnw script for \emph{BHH2} package}
+%%\VignetteDepends{BHH2}
+
+%% headings ========================================================
+%\pagestyle{myheadings} \markright{\hfill BHH2 \hfill}
+%% headings ========================================================
+
+\begin{document}
+
+\SweaveOpts{engine=R,eps=TRUE,pdf=TRUE,width=5,height=3,strip.white=TRUE}
+\setkeys{Gin}{width=\textwidth}
+
+\title{Some examples using the \pkg{BHH2} package\footnote{
+    \pkg{BHH2} current version: 0.2-1}}
+\author{Ernesto Barrios\\
+    University of Wisconsin-Madison}
+\date{March, 2005}
+\maketitle
+\tableofcontents
+
+<<preliminaries,echo=FALSE>>=
+options(width=76)
+library(BHH2)
+@
+
+\section{Introduction} Many of the calculations and figures in 
+\emph{Statistics for Experimenters II} (\citet*{BHH2-2005}) can be done 
+calling only a few number of \R\ functions. There are some plots and 
+computations more complex though. The purpose of the functions in the 
+\pkg{BHH2} package is to make easier some of these more elaborated 
+procedures. We have left apart, however, a set of functions for Bayesian 
+screening and follow-up designs, discussed in chapter 7 of the book, that we 
+collected in the \pkg{BsMD} package (\citet{R:BsMD-2005}).
+
+Most of the functions in the package are still under construction and can be 
+improved for computational efficiency and to extend their applicability. It 
+is assumed that the reader knows the basics of \R, some elements of plotting 
+and the use of the function \texttt{lm} for the fitting of linear models. 
+Various documents for the understanding and exploitation of the \R\ language 
+are available at CRAN (\code{http://cran.r-project.org}). In particular, 
+\emph{An Introduction to R} by \citet{VS-2005}, is enough to understand all 
+the functions in the \pkg{BHH2} package and if necessary to modify them to 
+better fit your needs. 
+
+In this document we introduce most of the functions included in the 
+\pkg{BHH2} package: \code{dotPlot}, \code{anovaPlot}, \code{lambdaPlot}, 
+\code{permtest} and \code{ddDesMatrix}. A list of all the functions and data 
+sets can be found in the help pages. To illustrate the use of the functions 
+just mentioned, we work out some of the examples in \emph{Statistics for 
+Experimenters II}, referred here after as BHH2.
+
+
+
+\section{Permutation Test}
+\subsectionF{permtest}
+
+In the two-samples problem ($(x_1,\dots,x_n)$ and $(y_1,\dots,y_m)$), the
+statistics $t$ and $F$ are computed for location and dispersion comparisons,
+and their $p$-values determined. Spooled variance is used in the equal means
+test. Next, the observations are combined in different samples as
+\[
+(x_1^{(i)},\dots,x_n^{(i)})\ \text{and} \ (y_1^{(i)},\dots,y_m^{(i)}),\ \ \ \
+i=1,\dots,N
+\]
+where $N=\binom{n+m}{n}$ is the total number of possible combinations. For
+each samples pair, $t^{(i)}$ and $F^{(i)}$ statistics are computed and then
+it is determined how many $t^{(i)}\leq t$ and $F^{(i)}\leq F$, to calculate
+the corresponding percentiles from the permutation (randomization)
+distribution.
+
+In the one-sample case, all the $N=2^n$ samples $(\pm x_1,\dots,\pm x_n)$ are
+generated and later determine how many $t^{(i)} \leq t$, to calculate the
+sample's percentile from the permutation distribution.
+
+Function \code{permtest} computes the observed $t$ and $F$ statistics and
+reports the corresponding $p$-values from the theoretical and permutation
+distributions.
+
+The following example corresponds to the Modified Fertilizer Mixtures for
+Tomato Plants example (BHH2, Ch.~3) . Samples from 2 different fertilizer
+mixtures are compared. In addition to the statistics and percentiles, the
+function \code{permtest} reports \code{N}, the number of different samples
+generated to build the permutation distribution.
+
+<<PermutationTest,echo=TRUE>>=
+# Permutation test for Tomato Data
+#cat("Tomato Data (not paired):\n")
+data(tomato.data)
+attach(tomato.data)
+a <- pounds[fertilizer=="A"]
+b <- pounds[fertilizer=="B"]
+permtest(b,a)
+detach()
+@
+
+The Boy's Shoes example is a randomized paired comparison of materials $A$
+and $B$ (BHH2, Ch.~3). It is of interest to test whether there is a
+significant difference between materials or not.
+
+<<PermutationTest,echo=TRUE>>=
+# Permutation test for Boy's Shoes Example
+#cat("Shoes Data (paired):\n")
+data(shoes.data)
+permtest(shoes.data$matB-shoes.data$matA)
+@
+
+The function is limited to small sample sizes ($N<20$). See also 
+\pkg{exactRankTests} and \pkg{DAAG} packages for other functions for 
+permutation tests. 
+
+\section{Dot Diagrams}
+\subsectionF{dotPlot}
+
+The \code{dotPlot} function produces a scatter plot similar to a
+stem-and-leaf plot or a histogram. Stacked or partially overlapped dots are
+used to display the frequency distribution. The dot plot has the nice
+property of displaying all the individual observations for moderated size
+data sets, useful to visualize reference distributions.
+
+In this example we display the dot plot of the yield data in the Industrial
+Process Example.
+
+\begin{center}
+<<fig=TRUE,width=5,height=3>>=
+par(mar=c(4,1,2,1),mgp=c(2,1,0),cex=0.7)
+data(tab03B1)
+#stem(tab03B1$yield)
+dotPlot(tab03B1$yield,main="Dot plot: Industrial Process Example",xlab="yield")
+@
+\end{center}
+
+The following plot represents the reference distribution of 191 differences
+between averages of disjoint sets of 10 observations of the Industrial
+Process Example.  See figures 3.3 and 3.5a and tables 3B of BHH2.
+
+\begin{center}
+<<fig=TRUE,width=5,height=3>>=
+par(mar=c(4,1,2,1),mgp=c(2,1,0),cex=0.7)
+data(tab03B2)
+plt <- dotPlot(tab03B2$diff10,xlim=2.55*c(-1,+1),xlab="differences",
+    main="Dot plot: Reference Distribution of Differences")
+segments(1.3,0,1.3,max(plt$y),lty=2)  #vertical line at x=1.3
+text(1.3,max(plt$y),labels=" 1.30",adj=0)
+@
+\end{center}
+
+\subsectionF{dots}
+The function \code{dots} is used by the functions \code{dotPlot} and
+\code{anovaPlot} to display the dots. See the help pages for details.
+
+
+
+\section{Graphical Anova}
+\subsectionF{anovaPlot}
+
+The \emph{anova plots} display in the same plot scatter diagrams of the
+scaled factor effects and the residuals, as reference distribution, so visual
+inspection of the plot would suggest which factor effects  may be different
+from the experimental and model error.
+
+To make a fair comparison between the factor effects and the residuals
+distribution, it is necessary to scale the effects properly. For example, for
+the factor $A$, the effect is multiplied by $\sqrt{n/k}$, where $k$ and $n$
+are the degrees of freedom of factor $A$ and the residuals respectively,
+taken from the table of analysis of variance.
+
+The next example is the Penicillin Yield experiment, in BHH2, Ch.~4. A
+randomized block experiment is considered in the study of the process of
+manufacturing penicillin under different treatments ($A$, \dots, $D$). The
+yield of the process is the response and the different product blends are
+used as blocking factor. A anova model (\code{aov}) is fitted and its anova
+plot displayed.
+
+\begin{center}
+<<fig=TRUE,width=5,height=3>>=
+par(mfrow=c(1,1),mar=c(3,1,2,1),cex=0.7)
+data(penicillin.data)
+penicillin.aov <- aov(yield~blend+treat,data=penicillin.data)
+anovaPlot(penicillin.aov,main="Anova plot: Penicillin Manufacturing Example",
+    labels=TRUE,cex.lab=0.6)
+@
+\end{center}
+
+The following example corresponds to the Toxic Agents example in BHH2,
+chapter 8, taken from \citet{Box&Cox-1964}. The response is the survival time
+of groups of animals. The kind of poison and the type of treatment used with
+the animals are the experimental factors. The anova plot, similar to figure
+8.5a. in BHH2 is generated.
+
+\begin{center}
+<<fig=TRUE,width=5,height=3>>=
+par(mfrow=c(1,1),mar=c(3,1,2,1),cex=0.7)
+data(poison.data)
+poison.lm <- lm(y~poison*treat,data=poison.data)
+anovaPlot(poison.lm,main="Anova plot: Toxic Agents Example",cex.lab=0.6)
+@
+\end{center}
+
+The function \code{anovaPlot} can be used in simple cases of split-plot
+experiments. Consider for example the Corrosion Resistance Study in BHH2, Ch
+9. The response is the resistance against corrosion of steel bars treated
+under different temperatures (\code{heats}) and with distinct coatings
+(\code{coating}) allocated in 6 castings (\code{run}). See table 9.1.
+
+The factor \code{heats} is allocated in the whole plot while the
+\code{coatings} factor and the interaction \code{heats:coating} in the
+sub-plot. The proper comparison of \code{heats} levels should be done with
+respect to the castings (\code{run}) as whole-plot errors. The factors
+\code{coating} and \code{heats:coating} should be compared against the
+residuals distribution (the sub-plot errors).
+
+Compare the plot below with figure 9.1 in BHH2.
+
+\begin{center}
+<<fig=TRUE,width=5,height=3>>=
+par(mfrow=c(1,1),mar=c(3,1,2,1),cex=0.7)
+data(corrosion.data)
+corrosion.aov <- aov(resistance~heats+run+coating+heats:coating,data=corrosion.data)
+anovaPlot(corrosion.aov,main="Anova plot: Corrosion Resistance Example",
+    cex.lab=0.6)
+@
+\end{center}
+
+
+\section{Lambda Plot}
+\subsectionF{lambdaPlot}
+
+The one-parameter Box-Cox transformation of the response $y$ is defined as
+\[ Y=\frac{y^\lambda-1}{\lambda} \]
+An empirical determination of the parameter $\lambda$ is presented in chapter
+8 of BHH2. \emph{Lambda plots} are also introduced as an alternative way for
+finding appropriate values of $\lambda$. Basically, a lambda plot of a linear
+model is the trace over various values of $\lambda$ of the relevant
+statistics: coefficients' $t$ or $F$ statistics, or the model's global
+$F$-ratio.
+
+In the next example it is constructed the lambda plot for the model fitted
+for the Toxic Agents example, introduced in the last section. In this case,
+the coefficients' $F$-statistic are traced for $-2 \leq \lambda \leq 1$.
+
+\begin{center}
+<<fig=TRUE,width=5,height=3>>=
+par(mar=c(4,3,2,1),mgp=c(2,1,0),cex=0.7)
+# Lambda Plot tracing F values.
+data(poison.data)
+lambdaPlot(poison.lm,lambda=seq(-2,1,by=.1),stat="F",global=FALSE,cex=0.6,
+    main="Lambda Plot: Toxic Agents Example")
+@
+\end{center}
+
+To illustrate the lambda plots when tracing the coefficients' $t$-statistic,
+consider the Woolen Thread experiment, presented in chapter 12 and used
+previously in \citet{Box&Cox-1964}. A $3^3$ factorial design was run with
+lifetime as response (\code{y}) affected by 3 factors: length (\code{x1}),
+amplitude (\code{x2}) and load (\code{x3}). A second degree model was fitted
+to the original response and its Box-Cox transformation for various values of
+$\lambda$ ($-1 \leq \lambda \leq 1$). Compare the plot below with figure 12.7
+in BHH2. The printed table will allow you to match the labels in the figure
+with the terms in the model.
+
+\begin{center}
+<<fig=TRUE,width=5,height=4>>=
+# Lambda Plot tracing t values.
+par(mar=c(4,3,2,1),mgp=c(2,1,0),cex=0.7)
+data(woolen.data)
+woolen.lm <- lm(y~x1+x2+x3+I(x1^2)+I(x2^2)+I(x3^2)+I(x1*x2)+I(x1*x3)+I(x2*x3)+I(x1*x2*x3),data=woolen.data)
+lambdaPlot(woolen.lm,main="Lambda plot: Woolen Thread Example (2nd order model)",
+    stat="t",cex=0.6)
+@
+\end{center}
+
+\noindent The  "global-$F$" lambda plot for the corresponding first order
+model in the Woolen Thread example is shown next. (See BHH2, figure 12.8.)
+
+\begin{center}
+<<fig=TRUE,width=5,height=3>>=
+par(mar=c(4,3,2,1),mgp=c(2,1,0),cex=0.7)
+# Lambda Plot tracing F values.
+lambdaPlot(lm(y~x1+x2+x3,data=woolen.data),lambda=seq(-1,1,length=31),
+    main="Lambda plot: Woolen Thread Example (1st order model)",stat="F",global=TRUE)
+@
+\end{center}
+
+
+\section{Design Matrices}
+\subsectionF{ffDesMatrix}
+
+Function \code{ffDesMatrix} is used to build 2-level (-1,+1) factorial
+designs. If generators different from \code{NULL} are provided to the
+function, the corresponding fractional factorial is built. (See BHH2, Table 
+6.22, p 272.) For example, the design matrix of a $2^{5-1}$ fractional 
+factorial design with defining relation $I=12345$, is built by
+
+<<DesignMatrix,echo=TRUE>>=
+print(X <- ffDesMatrix(5,gen=list(c(-5,1,2,3,4))))
+@
+See the \code{ffDesMatrix} help pages for details.
+
+\subsectionF{ffFullMatrix}
+
+The function \code{ffFullMatrix} is a nice companion to \code{ffDesMatrix}.
+Provided what factors to consider and the desired interaction order, from a
+given design matrix, the function \code{ffFullMatrix} builds the
+corresponding model matrix including columns for the constant term and the
+blocking factors. For example, from the fractional design just built above,
+we construct the matrix for a model on factors 1, 2, 3 and 4, with main
+effects and second order interactions and the 5th factor as blocking factor.
+
+<<DesignMatrix,echo=TRUE>>=
+ffFullMatrix(X,x=c(1,2,3,4),maxInt=2,blk=X[,5])$Xa
+@
+
+\noindent The function \code{ffFullMatrix} is useful for identifying 
+confounding patterns in a design.
+
+
+\section{Combinations}
+\subsectionF{subsets}
+The function \code{subsets}, by Bill Venables, generates all the different
+subsets of size $r$ chosen from $n$ different elements $v$. It is used by the
+\code{permtest} and \code{ffFullMatrix} functions. For example,
+
+<<Subsets,echo=TRUE>>=
+subsets(n=5,r=3,v=c("x","y","z","A","B"))
+@
+
+\noindent Function \code{subsets} is a nice example of a recursive function
+and worth to understand. See also function \code{combinations} of the 
+\pkg{gtools} package.
+
+\section{The \pkg{BsMD} package}
+
+The package \pkg{BsMD} for Bayesian screening and follow-up designs should be
+thought as part of \pkg{BHH2}. It includes functions for the generation of
+Daniel and Lenth's plots, presented in chapters 5 and 6 of BHH2. It also
+includes functions for the Bayesian analysis of factorial designs and the
+problem of adding extra runs to resolve unclear factor activities. These
+topics are presented in chapter 7, \emph{Additional Fractional Factorials and
+Analyses}.
+
+The main functions in \pkg{BsMD} are:
+
+\subsectionF{DanielPlot}
+Displays the normal plot of effects from a two level factorial experiment.
+
+\subsectionF{LenthPlot}
+Plots the factor effects with significance levels based on robust estimation
+of contrast standard errors.
+
+\subsectionF{BsProb}
+The marginal factor posterior probabilities and model posterior probabilities
+from designed screening experiments are calculated according to Box and
+Meyer's Bayesian procedure. Methods functions \code{plot}, \code{print} and
+\code{summary} are available for function \code{BsProb}.
+
+\subsectionF{MD}
+Best follow-up experiments based on the MD criterion are suggested to
+discriminate between competing models. Methods functions \code{print} and
+\code{summary} are available for function \code{MD}.
+
+\bigskip Please refer to the help pages of \pkg{BsMD} for a complete list of
+the functions and data sets included. The package also includes the document
+\emph{Using BsMD for Bayesian Screening and Model Discrimination} with
+various examples on the use of the functions.
+
+
+\section{Summary} Most of the computations in \citet*{BHH2-2005} can be done 
+in \R\ with only a small number of function calls. For some of the more 
+elaborated procedures, we have included in the \pkg{BHH2} package the 
+plotting functions: \code{anovaPlot}, \code{dotPlot}, and \code{lambdaPlot}; 
+the function \code{permtest} for randomization tests and \code{ddDesMatrix} 
+for the construction of 2-levels factorial designs. The calculations involved 
+in Bayesian screening and follow-up designs, presented in chapter 7, are more 
+computing intensive and the dedicated package \pkg{BsMD} is available. For 
+details of the functions in \pkg{BHH2} please see the help pages of the 
+package.
+
+\bibliographystyle{plainnat} %\addcontentsline{toc}{section}{References}
+\bibliography{BHH2}
+
+\end{document}
