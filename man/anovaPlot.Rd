@@ -8,7 +8,7 @@
 \usage{
     anovaPlot(obj, stacked = TRUE, base = TRUE, axes = TRUE,
     faclab = TRUE, labels = FALSE, cex = par("cex"),
-    cex.lab = par("cex.lab"), ...)
+    cex.lab = par("cex.lab"), \dots)
 }
 \arguments{
   \item{obj}{Object of class \code{aov} or \code{lm} for which marginal
@@ -43,14 +43,15 @@
     the residual at the bottom of the plotting area. The function returns a
     list with the coordinates of all the dots displayed.
 }
-\warning{
+\section{warning}{
     The function identifies as an interaction factor any factor
     with the colon character ":" in its name. Factors like "I(A:B)"
     will give you problems.
 }
 \value{
     The function is called for graphical display of factor levels mean and
-    residuals as reference distribution. An invisible list with the actual (x,y) coordinates used for each of
+    residuals as reference distribution. An invisible list with the actual (x,y)
+    coordinates used for each of
     the factors and residuals.
 }
 \note{

@@ -12,7 +12,7 @@ function (x, y = 0.1, xlim = range(x, na.rm = TRUE), stacked = FALSE,
     h <- strheight(pch.size, units = "user", cex = hcex * cex)
     if (stacked) {
         if (xmax - xmin < b) {
-            error("x-dimension resolution problem")
+            stop("x-dimension resolution problem")
         }
         else {
             xu <- seq(xmin, xmax, by = b)
