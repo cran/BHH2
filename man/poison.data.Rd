@@ -1,6 +1,5 @@
 \name{poison.data}
 \alias{poison.data}
-\non_function{}
 \title{Poison example data set}
 \usage{data(poison.data)}
 \description{

@@ -1,6 +1,5 @@
 \name{tab03B2}
 \alias{tab03B2}
-\non_function{}
 \title{ Table 3.3 }
 \usage{data(tab03B2)}
 \description{
