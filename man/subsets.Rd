@@ -28,9 +28,8 @@ subsets(n, r, v = 1:n)
     message from Bill Venables to \file{r-help} list on Sun, 17 Dec 2000.
 }
 \seealso{
-    \code{combinations} of the \pkg{gtools} package.}
+  \code{combinations} of the \pkg{gtools} package.
 }
-
 \examples{
 library(BHH2)
 subsets(5,3)

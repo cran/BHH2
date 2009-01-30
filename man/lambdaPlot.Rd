@@ -24,7 +24,8 @@ The response is transformed as
 \eqn{Y=(y^{\lambda}-1)/\lambda}{Y=(y^\lambda - 1)/\lambda}
 for each value of \eqn{\lambda}{\lambda} (\code{lambda}) and the model refitted.
 The \emph{t}-values or \emph{F}-ratios of the coefficients are saved for the display.
-If \code{global=TRUE}, then the \emph{F}-ratio of the whole model is plotted instead.}
+If \code{global=TRUE}, then the \emph{F}-ratio of the whole model is
+plotted instead.
 }
 \value{
     The function returns an invisible list with components:
