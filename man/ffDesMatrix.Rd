@@ -28,7 +28,9 @@ ffDesMatrix(k, gen = NULL)
     The function returns a 2-levels design matrix with \code{k} columns.
 }
 \seealso{
-    \code{conf.design} of the \pkg{conf.design} package.
+  \code{\link[conf.design]{conf.design}} of the
+  \pkg{\link[conf.design]{conf.design}} package,
+  \code{\link[FrF2]{FrF2}} from the \pkg{\link[FrF2]{FrF2}} package.
 }
 \author{Ernesto Barrios}
 \examples{

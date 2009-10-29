@@ -21,8 +21,8 @@ function (X, x, maxInt, blk = NULL)
             tt <- matrix(tt, nrow = 1)
         for (j in 1:nrow(tt)) {
             nT[i] <- nT[i] + 1
-            Z <- cbind(Z, eval(parse(text = (paste("X[", tt[j, 
-                ], "]", collapse = "*", sep = "")))))
+            Z <- cbind(Z, eval(parse(text = (paste("X[", tt[j,  
+                ],  "]", collapse = "*", sep = "")))))
             names(Z)[ncol(Z)] <- paste("x", tt[j, ], collapse = "*", 
                 sep = "")
         }

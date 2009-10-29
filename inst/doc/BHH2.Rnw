@@ -16,7 +16,7 @@
     \addcontentsline{toc}{subsection}{Function \code{#1}}
     }
 
-%%\VignetteIndexEntry{Rnw script for \emph{BHH2} package}
+%%\VignetteIndexEntry{Vignette for the BHH2 package}
 %%\VignetteDepends{BHH2}
 
 %% headings ========================================================
