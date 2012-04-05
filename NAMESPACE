@@ -1,0 +1,9 @@
+# Export all names
+export(anovaPlot, dotPlot, dots,
+       ffDesMatrix,
+       ffFullMatrix,
+       lambdaPlot,
+       permtest,
+       subsets)
+
+

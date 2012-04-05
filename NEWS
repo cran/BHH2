@@ -1,0 +1,8 @@
+### NEWS  file for CRAN package BHH2   ###
+This file introduced with version BHH2-2012.04-0
+
+2012.04-0   :
+    introduced file NAMESPACE
+    introduced new date-based version numbering
+
+

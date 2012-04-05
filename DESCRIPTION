@@ -1,6 +1,6 @@
 Package: BHH2
-Version: 1.0.3
-Date: 2009-10.29
+Version: 2012.04-0
+Date: 2012-04-05
 Title: Useful Functions for Box, Hunter and Hunter II
 Author: Ernesto Barrios
 Maintainer: Kjetil B.Halvorsen <kjetil1001@gmail.com>
@@ -9,6 +9,6 @@ Description: Functions and data sets reproducing some examples in Box,
 Depends: R (>= 2.0.0)
 Suggests: FrF2
 License: GPL (>= 2)
-Packaged: 2009-10-30 01:58:00 UTC; kjetil
+Packaged: 2012-04-04 17:40:09 UTC; kjetil
 Repository: CRAN
-Date/Publication: 2009-10-30 07:56:50
+Date/Publication: 2012-04-04 15:09:31
