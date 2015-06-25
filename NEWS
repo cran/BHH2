@@ -4,5 +4,7 @@ This file introduced with version BHH2-2012.04-0
 2012.04-0   :
     introduced file NAMESPACE
     introduced new date-based version numbering
+2015.06.25   :   Only extended the Description field in file
+                 DESCRIPTION as begged for by CRAN checks
 
 
