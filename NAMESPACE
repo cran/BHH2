@@ -5,5 +5,9 @@ export(anovaPlot, dotPlot, dots,
        lambdaPlot,
        permtest,
        subsets)
+ importFrom("graphics", "axis", "lines", "mtext", "par", "plot",
+             "points", "segments", "strheight", "strwidth", "text")
+ importFrom("stats", "anova", "as.formula", "coef", "lm",
+            "model.tables", "pf", "pt", "resid", "var")
 
 
